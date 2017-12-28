@@ -1,0 +1,8 @@
+{
+    "name": "wetdirt-poc2",
+    "version": "0.1.0",
+    "dependencies": {
+        "ansi": "*",
+        "telnet": "*"
+    }
+}
