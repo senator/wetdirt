@@ -1,0 +1,11 @@
+{
+    "name": "wetdirt-poc3",
+    "version": "0.1.0",
+    "dependencies": {
+        "ansi": "*",
+        "telnet": "*"
+    },
+    "engines": {
+        "node": ">=4.8"
+    }
+}
