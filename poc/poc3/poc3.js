@@ -1,6 +1,7 @@
 var telnet = require("telnet");
 var ansi = require("ansi");
 var readline = require("readline");
+var commands = require("./commands");
 
 function ClientIdentifier(socket) {
   var self = this;
@@ -30,7 +31,6 @@ function clientWindowSizeHandler(evt) {
 
 function clientDataHandler(cursor, data) {
   console.log("Received data:", data);
-  cursor.write("Received: ").yellow().write(data).reset().write("\n");
 }
 
 function clientErrorHandler(id, err) {
@@ -57,9 +57,11 @@ function clientHandler(client) {
 
   setTimeout(function() {
     var readline_interface = readline.createInterface({input: client.input,
-      output: client.output});
+      output: client.output, terminal: true});
 
-    readline_interface.on("line", function(line) { console.log("readline:", line) });
+    readline_interface.on(
+      "line", function(line) { commands.runLine(cursor, line) }
+    );
 
   }, 1000);
 
