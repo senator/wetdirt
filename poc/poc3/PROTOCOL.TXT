@@ -1,0 +1,107 @@
+cif-sim Protocol
+================
+
+Here is some definition of the JSON-based protocol for use over TCP on
+port 20746 between the "cif" (client interface server) system and the
+"sim" (game simulation server) system.
+
+Context
+-------
+
+For each client connected to the cif, the cif should immediately
+establish and maintain one connection to the sim.  The context for
+communication over that connection between cif and sim is all
+information exchange and control pertaining to that one client connection.
+
+Paradigm
+--------
+
+In general, either side can send a message at any time.  TCP is
+full-duplex, after all. If a message sent by one side to the other is
+meant to elicit a response, that response may or may not come whenever
+the other side feels like sending it.  The overall pattern is not
+request/response, but more like two state machines sending each other
+messages.
+
+In the "cif" -> "sim" direction
+-------------------------------
+
+Each message sent the "cif" to the "sim" should be one JSON object that
+looks like this:
+
+{"command": "foo", "params": ["1", "bar", "0122.2"]}
+
+As usual with JSON, the whitespace outside of strings is optional and
+meaningless.  Any whitespace used in the JSON representations in this
+document are to ease reading.  In practice, whitespace should be stripped
+to avoid waisting network traffic.
+
+The value of the "command" property must always be a string. The value of
+the "params" property must always be an array of 0 or more elements.  The
+elements of the array under the "params" property must themselves be strings.
+
+It is for the receiving end handling each message to re-interpret individual
+elements of the "params" array as numbers, booleans, or anything else as
+appropriate to the application.
+
+In the "sim" -> "cif" direction
+-------------------------------
+
+Each message sent from "sim" to "cif" should be one JSON object that
+looks like some portion of the following:
+
+{
+    "display": [
+        ["notice", "This is notice text, "],
+        ["alarm", "but this is alarming text!"],
+        ["explicit_blue", "(this is explicitly blue)"]
+    ],
+    "expect": "demo_response",
+    "info": {
+        "subject": "request_something",
+        "content": ["one", "two", "three"]
+    }
+}
+
+Each of the three top-level properties is intended to elicit different
+behavior from the receiving (cif) state machine.  The object may contain
+any or all of these properties.
+
+"display" should cause the cif to display the contents of the value array
+to its client.  Each member of the "display" array is another array of
+exactly two elements.  The first member of this inner array is a string that
+should cause a lookup in the client's color/style preferences, if any, to
+determine how to color and style the text of the second member.  The first
+member may sometimes specify an explicit color.  The exact range of possible
+values for the first member will be set later in some other document.  After
+all elements from the "display" array are in fact, displayed, the client
+should be returned to his resting/default color and style, and a newline
+should be written.
+
+"expect" should cause the cif to send the user's next entered line as
+parameters to the command specified by the value of "expect".  The cif
+typically sends the first parseable word of the user's input as a command
+and the remaining words as parameters, but right after having received
+something like "expect": "demo_response" it will instead send all the
+user's words as parameters to the "demo_response" command.  The subsequent
+line of user input will again be treated normally.
+
+"info" carries data from the sim not intended for immediate display.
+The value of "info" is an object.  That object's "subject" property
+informs the cif how the data is to be used.  The "content" property is a
+full arbitrary object containing the data. The purpose of this construct
+is to allow the sim to send, for example, a user's custom color map
+or a set of completion suggestions for readline.  If it should prove
+neccessary to support having some cif commands act like requests that
+yield responses from the sim, then the "subject" property could refer to
+the original cif-sent command that elicited the reponse ("info" message).
+
+Keep-alives
+-----------
+
+The behavior and timings of any keep-alive scheme are TBD.  However, both
+sides speaking this protocol should tolerate the arrival of empty objects:
+
+{}
+
+Such objects can be used as keep-alives in either direction.
