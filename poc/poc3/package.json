@@ -3,7 +3,8 @@
     "version": "0.1.0",
     "dependencies": {
         "ansi": "*",
-        "telnet": "*"
+        "telnet": "*",
+        "shell-quote": "~1.6.1"
     },
     "engines": {
         "node": ">=4.8"

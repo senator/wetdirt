@@ -1,0 +1,21 @@
+wetdirt (network-wise)
+
+ O      O                    TCP   +------------+  TCP   +------------+
+\|/    \|/      +---------+ telnet |   client   | custom |    game    |
+ |      |       | stunnel |--------| interface  |--------| simulation |
+/ \    / \      +---------+  20243 |   server   |  20746 |   server   |
+                                   +------------+        +------------+
+
+Scope:
+    Client interface server (cif):
+        readline
+        colors
+        telnet/terminal business
+        /client connections/, regardless of sim user acct
+        handles some commands related to cif scope, passes others onto sim
+        interchange with sim is in some JSON-based format over TCP
+
+    Game simluation server (sim):
+        user accounts and sessions
+        abstractly marked-up messages (delivered in that JSON-based format)
+        some kind of database, in the most general sense, for accounts, world

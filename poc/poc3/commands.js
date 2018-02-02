@@ -4,6 +4,24 @@ var dispatch = {
   },
   "echo": function echo(wd_client, tokens) {
     wd_client.cursor.green().write(tokens.join(" ")).reset().write("\n");
+  },
+  "quit": function quiet(wd_client, tokens) {
+    wd_client.client.end();
+  },
+  "test": function test(wd_client, tokens) {
+    var count;
+
+    if (tokens.length >= 2 && (count = Number(tokens[1]))) {
+      wd_client.cursor.cyan().write(`Will callback ${count} times`).reset().write("\n");
+      
+      for (var i = 0; i < count; i++) {
+        setTimeout(function() {
+          wd_client.cursor.red().write(`Here I am on iteration ${i}`).reset().write("\n");
+        } , (i + 1) * 1000);
+      }
+    } else {
+      wd_client.cursor.yellow().write(`Doing nada since tokens.length is ${tokens.length}\n`).reset();
+    }
   }
 };
 

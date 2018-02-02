@@ -27,4 +27,4 @@ function _telnet_client_handler(client) {
 }
 
 wd_clienttracker = new WD_ClientTracker();
-telnet.createServer(_telnet_client_handler).listen(23069);
+telnet.createServer(_telnet_client_handler).listen(20243);
