@@ -50,6 +50,18 @@ MetaClient.prototype._setup_handlers = function _sh(handlers) {
     self.rows = evt.rows;
     self.cols = evt.cols;
     console.log(`cols, rows for ${self.clientId}: ${self.cols}, ${self.rows}`);
+
+    if (handlers.line) {
+      var readlineInterface = readline.createInterface({
+        input: self.client.input,
+        output: self.client.output,
+        terminal: true
+      });
+
+      readlineInterface.setPrompt("\x1b[33mfoo\x1b[mbar>");
+      readlineInterface.on("line", function(line){ handlers.line(self, line) });
+      self.readlineInterface = readlineInterface;
+    }
   });
 
   if (handlers.end)
@@ -57,22 +69,6 @@ MetaClient.prototype._setup_handlers = function _sh(handlers) {
 
   if (handlers.error)
     this.client.on("error", handlers.error.bind(null, this));
-
-  if (handlers.line) {
-    /* XXX setTimeout(..., 1000) here is a kludge.  There's some event to
-     * wait for instead... */
-    setTimeout(function() {
-      var readlineInterface = readline.createInterface({
-        input: self.client.input,
-        output: self.client.output,
-        terminal: true
-      });
-
-      readlineInterface.on("line", function(line){ handlers.line(self, line) });
-      self.readlineInterface = readlineInterface;
-
-    }, 1000);
-  }
 };
 
 MetaClient.prototype.beginOut = function beginOut() {
