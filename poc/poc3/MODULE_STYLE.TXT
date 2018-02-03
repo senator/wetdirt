@@ -1,0 +1,15 @@
+Mainly I'm concerned with what modules should export.
+
+When modules export static methods or module variables
+(module-as-singleton), those methods or variables should be named in
+littleCamelCase.
+
+When modules export constructors, those constructors should be named in
+BigCamelCase, but they should not *be* the entire module export (e.g.,
+module.exports = FooThing)
+
+When modules export constants, those constants should be named in
+ALL_CAPS_SNAKE_CASE.
+
+Modules themselves should be named in littleCamelCase both on the
+filesystem and when given a variable reference.
