@@ -2,12 +2,14 @@
 
 ## Plan
 
-* Architecture: full definition TBD, but a modular design using NodeJS.
-  Separation of components designed to handle client interactions with
-  those that handle the game (so that those components can be deployed
-  and scaled somewhat independently).
-* Won't use SSL directly, but should support wrapping the connections
-  with `stunnel` or similar for some connection privacy.
+See these files:
+
+* docs/ARCH.TXT
+* docs/PROTOCOL.TXT
+
+Won't use SSL directly, but should support wrapping the connections
+with `stunnel` or similar for some connection privacy. Or then again,
+I could look into making this work through SSH.
 
 ## Copyright and license
 

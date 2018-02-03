@@ -1,0 +1,14 @@
+{
+    "name": "wetdirt-sim",
+    "description": "Game Simluation Server (sim) for Wetdirt",
+    "version": "0.1.0",
+    "dependencies": {
+    },
+    "engines": {
+        "node": ">=4.8"
+    },
+    "scripts": {
+        "start": "node main.js"
+    },
+    "main": "./main"
+}

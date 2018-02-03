@@ -1,5 +1,6 @@
 {
-    "name": "wetdirt-poc3",
+    "name": "wetdirt-cif",
+    "description": "Client Interface Server (cif) for Wetdirt",
     "version": "0.1.0",
     "dependencies": {
         "ansi": "*",
@@ -10,6 +11,7 @@
         "node": ">=4.8"
     },
     "scripts": {
-        "start": "node poc3.js"
-    }
+        "start": "node main.js"
+    },
+    "main": "./main"
 }

@@ -1,27 +1,45 @@
 var ansi = require("ansi");
 var readline = require("readline");
-var WD_ClientIdentifier = require("./WD_ClientIdentifier");
 
-function WD_Client(client, handlers) {
+function _ClientIdentifier(socket) {
+  var self = this;
+
+  ["remotePort","remoteFamily","remoteAddress"].forEach(k => {
+    self[k] = socket[k];
+  });
+
+  self.timestamp = new Date();
+  self.randomPart = parseInt(Math.random() * (1024 * 1024 * 1024)).toString(16);
+}
+
+_ClientIdentifier.prototype.toString = function toString() {
+  return [
+    String(Number(this.timestamp)),
+    this.randomPart,
+    this.remoteFamily,
+    this.remoteAddress + ":" + this.remotePort
+  ].join("-");
+}
+
+function MetaClient(client, handlers) {
   this.client = client;
-  this.clientId = new WD_ClientIdentifier(client.input);
+  this.clientId = new _ClientIdentifier(client.input);
   this.cursor = ansi(client, {enabled: true});
   this.cols = null;
   this.rows = null;
 
   this._terminal_configuration();
   this._setup_handlers(handlers);
-  console.log("boom");
 }
 
-WD_Client.prototype._terminal_configuration = function _tc() {
+MetaClient.prototype._terminal_configuration = function _tc() {
   this.client.do.window_size();
   this.client.do.suppress_go_ahead();
   this.client.will.suppress_go_ahead();
   this.client.will.echo();
 };
 
-WD_Client.prototype._setup_handlers = function _sh(handlers) {
+MetaClient.prototype._setup_handlers = function _sh(handlers) {
   var self = this;
   handlers = handlers || {};
 
@@ -56,4 +74,6 @@ WD_Client.prototype._setup_handlers = function _sh(handlers) {
   }
 };
 
-module.exports = WD_Client;
+module.exports = {
+  MetaClient: MetaClient
+};
