@@ -62,16 +62,26 @@ MetaClient.prototype._setup_handlers = function _sh(handlers) {
     /* XXX setTimeout(..., 1000) here is a kludge.  There's some event to
      * wait for instead... */
     setTimeout(function() {
-      var readline_interface = readline.createInterface({
+      var readlineInterface = readline.createInterface({
         input: self.client.input,
         output: self.client.output,
         terminal: true
       });
 
-      readline_interface.on("line", function(line) { handlers.line(self, line) });
+      readlineInterface.on("line", function(line){ handlers.line(self, line) });
+      self.readlineInterface = readlineInterface;
 
     }, 1000);
   }
+};
+
+MetaClient.prototype.beginOut = function beginOut() {
+  this.cursor.horizontalAbsolute(0).eraseLine();
+};
+
+MetaClient.prototype.endOut = function endOut() {
+  this.cursor.reset().write("\n");
+  this.readlineInterface.prompt(true);
 };
 
 module.exports = {
